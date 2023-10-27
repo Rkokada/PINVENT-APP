@@ -34,6 +34,7 @@ const userSchema = mongoose.Schema({
         maxLength: [250, "A bio não deve ser maior que 250 caracteres"],
         default: "bio"
     },
+
 },
     { timestamp: true, }
 );
