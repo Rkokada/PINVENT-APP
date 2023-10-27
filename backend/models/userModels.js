@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
         type: String,
         required: [true, "Por favor, insira uma senha!"],
         minLength: [6, "A senha deve ser maior que 6 caracteres"],
-        maxLength: [23, "A senha deve ser menor que 23 caracteres"]
+        // maxLength: [23, "A senha deve ser menor que 23 caracteres"]
     },
     photo: {
         type: String,
@@ -36,7 +36,20 @@ const userSchema = mongoose.Schema({
     },
 },
     { timestamp: true, }
-)
+);
+
+// Encrypt password before saving to DB
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        return next()
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
+    next()
+})
 
 const User = mongoose.model("User", userSchema)
 
